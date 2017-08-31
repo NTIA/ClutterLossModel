@@ -9,6 +9,9 @@ namespace ITUClutterLoss
     public class QFunction
     {
         #region Raw Data
+
+        // from http://www.ece.ucdavis.edu/~levy/eec161/qfunc.pdf
+
         private static double[] RAW_X = new double[] {
             0.00,
             0.05,
