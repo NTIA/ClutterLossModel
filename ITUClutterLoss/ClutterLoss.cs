@@ -11,15 +11,13 @@ namespace ITUClutterLoss
     /// </summary>
     public class ClutterLoss
     {
-        public Random rando { get; set; }
+        protected Random rando { get; set; }
 
-        public double Nnormaldist { get; set; }
+        public double Ll { get; protected set; }
 
-        public double Qterm;
+        public double Ls { get; protected set; }
 
-        public double LldB;
-
-        public double LsdB;
+        public double QInverse { get; protected set; }
 
         public ClutterLoss(Random rando)
         {
@@ -29,16 +27,16 @@ namespace ITUClutterLoss
         /// <summary>
         /// ITU-R P.2108-0 Section 3.2. Designed for input P to be random and output Qterm is random
         /// </summary>
-        /// <param name="FrequencyGHz"></param>
-        /// <param name="Distancekm"></param>
-        /// <returns>Clutter in Terrestrial Link</returns>
-        public double TerrestrialtoTerrestrialClutterLoss(double FrequencyGHz, double Distancekm)
+        /// <param name="FrequencyGHz">The frequency in GHz</param>
+        /// <param name="Distancekm">The distance in km</param>
+        /// <param name="p">The p value to use for the inverse q function</param>
+        /// <returns>Clutter Loss in Terrestrial Link</returns>
+        public double TerrestrialtoTerrestrialClutterLoss(double FrequencyGHz, double Distancekm, double p)
         {
-            LldB = 23.5 + 9.6 * Math.Log10(FrequencyGHz);
-            LsdB = 32.98 + 23.9 * Math.Log10(Distancekm) + 3 * Math.Log10(FrequencyGHz);
-            Nnormaldist = N(0, 1);
-            Qterm = 6 * Nnormaldist;
-            double ClutterLossdB = -5 * Math.Log10(Math.Pow(10, -0.2 * LldB) + Math.Pow(10, -0.2 * LsdB)) - Qterm;
+            Ll = 23.5 + 9.6 * Math.Log10(FrequencyGHz);
+            Ls = 32.98 + 23.9 * Math.Log10(Distancekm) + 3 * Math.Log10(FrequencyGHz);
+            QInverse = QFunction.inverse(p);
+            double ClutterLossdB = -5 * Math.Log10(Math.Pow(10, -0.2 * Ll) + Math.Pow(10, -0.2 * Ls)) - 6 * QInverse;
 
             return ClutterLossdB;
         }
